@@ -43,6 +43,62 @@ jobs:
         
     - name: 生成配置文件 (方案2 - 模板配置)
       if: ${{ secrets.CONFIG_JSON == '' }}
+      env:
+        BARK_URL: ${{ secrets.BARK_URL || '' }}
+        COOLPUSHEMAIL: ${{ secrets.COOLPUSHEMAIL || 'false' }}
+        COOLPUSHQQ: ${{ secrets.COOLPUSHQQ || 'false' }}
+        COOLPUSHSKEY: ${{ secrets.COOLPUSHSKEY || '' }}
+        COOLPUSHWX: ${{ secrets.COOLPUSHWX || 'false' }}
+        DINGTALK_ACCESS_TOKEN: ${{ secrets.DINGTALK_ACCESS_TOKEN || '' }}
+        DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET || '' }}
+        FSKEY: ${{ secrets.FSKEY || '' }}
+        PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN || '' }}
+        PUSHPLUS_TOPIC: ${{ secrets.PUSHPLUS_TOPIC || '' }}
+        QMSG_KEY: ${{ secrets.QMSG_KEY || '' }}
+        QMSG_TYPE: ${{ secrets.QMSG_TYPE || '' }}
+        QYWX_AGENTID: ${{ secrets.QYWX_AGENTID || '' }}
+        QYWX_CORPID: ${{ secrets.QYWX_CORPID || '' }}
+        QYWX_CORPSECRET: ${{ secrets.QYWX_CORPSECRET || '' }}
+        QYWX_KEY: ${{ secrets.QYWX_KEY || '' }}
+        QYWX_MEDIA_ID: ${{ secrets.QYWX_MEDIA_ID || '' }}
+        QYWX_TOUSER: ${{ secrets.QYWX_TOUSER || '' }}
+        SCKEY: ${{ secrets.SCKEY || '' }}
+        SENDKEY: ${{ secrets.SENDKEY || '' }}
+        TG_API_HOST: ${{ secrets.TG_API_HOST || '' }}
+        TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN || '' }}
+        TG_PROXY: ${{ secrets.TG_PROXY || '' }}
+        TG_USER_ID: ${{ secrets.TG_USER_ID || '' }}
+        MERGE_PUSH: ${{ secrets.MERGE_PUSH || '' }}
+        ACFUN_PASSWORD_1: ${{ secrets.ACFUN_PASSWORD_1 || '' }}
+        ACFUN_PHONE_1: ${{ secrets.ACFUN_PHONE_1 || '' }}
+        ALIYUN_REFRESH_TOKEN_1: ${{ secrets.ALIYUN_REFRESH_TOKEN_1 || '' }}
+        AOLAXING_COOKIE_1: ${{ secrets.AOLAXING_COOKIE_1 || '' }}
+        BAIDU_DATA_URL_1: ${{ secrets.BAIDU_DATA_URL_1 || '' }}
+        BAIDU_SUBMIT_URL_1: ${{ secrets.BAIDU_SUBMIT_URL_1 || '' }}
+        BAIDU_TIMES_1: ${{ secrets.BAIDU_TIMES_1 || '10' }}
+        BILIBILI_COIN_NUM_1: ${{ secrets.BILIBILI_COIN_NUM_1 || '0' }}
+        BILIBILI_COIN_TYPE_1: ${{ secrets.BILIBILI_COIN_TYPE_1 || '1' }}
+        BILIBILI_COOKIE_1: ${{ secrets.BILIBILI_COOKIE_1 || '' }}
+        BILIBILI_SILVER2COIN_1: ${{ secrets.BILIBILI_SILVER2COIN_1 || 'true' }}
+        ENSHAN_COOKIE_1: ${{ secrets.ENSHAN_COOKIE_1 || '' }}
+        IMAOTAI_CITY_1: ${{ secrets.IMAOTAI_CITY_1 || '' }}
+        IMAOTAI_LAT_1: ${{ secrets.IMAOTAI_LAT_1 || '' }}
+        IMAOTAI_LNG_1: ${{ secrets.IMAOTAI_LNG_1 || '' }}
+        IMAOTAI_MOBILE_1: ${{ secrets.IMAOTAI_MOBILE_1 || '' }}
+        IMAOTAI_PROVINCE_1: ${{ secrets.IMAOTAI_PROVINCE_1 || '' }}
+        IMAOTAI_TOKEN_1: ${{ secrets.IMAOTAI_TOKEN_1 || '' }}
+        IMAOTAI_USERID_1: ${{ secrets.IMAOTAI_USERID_1 || '' }}
+        IQIYI_COOKIE_1: ${{ secrets.IQIYI_COOKIE_1 || '' }}
+        KGQQ_COOKIE_1: ${{ secrets.KGQQ_COOKIE_1 || '' }}
+        MIMOTION_MAX_STEP_1: ${{ secrets.MIMOTION_MAX_STEP_1 || '20000' }}
+        MIMOTION_MIN_STEP_1: ${{ secrets.MIMOTION_MIN_STEP_1 || '10000' }}
+        MIMOTION_PASSWORD_1: ${{ secrets.MIMOTION_PASSWORD_1 || '' }}
+        MIMOTION_PHONE_1: ${{ secrets.MIMOTION_PHONE_1 || '' }}
+        SMZDM_COOKIE_1: ${{ secrets.SMZDM_COOKIE_1 || '' }}
+        TIEBA_COOKIE_1: ${{ secrets.TIEBA_COOKIE_1 || '' }}
+        V2EX_COOKIE_1: ${{ secrets.V2EX_COOKIE_1 || '' }}
+        V2EX_PROXY_1: ${{ secrets.V2EX_PROXY_1 || '' }}
+        YOUDAO_COOKIE_1: ${{ secrets.YOUDAO_COOKIE_1 || '' }}
       run: |
         echo "使用模板配置方案"
         python3 << 'EOF'
@@ -51,134 +107,134 @@ import json
 
 # 创建基础配置结构
 config = {
-    "BARK_URL": "${{ secrets.BARK_URL || '' }}",
-    "COOLPUSHEMAIL": "${{ secrets.COOLPUSHEMAIL || 'false' }}".lower() == "true",
-    "COOLPUSHQQ": "${{ secrets.COOLPUSHQQ || 'false' }}".lower() == "true",
-    "COOLPUSHSKEY": "${{ secrets.COOLPUSHSKEY || '' }}",
-    "COOLPUSHWX": "${{ secrets.COOLPUSHWX || 'false' }}".lower() == "true",
-    "DINGTALK_ACCESS_TOKEN": "${{ secrets.DINGTALK_ACCESS_TOKEN || '' }}",
-    "DINGTALK_SECRET": "${{ secrets.DINGTALK_SECRET || '' }}",
-    "FSKEY": "${{ secrets.FSKEY || '' }}",
-    "PUSHPLUS_TOKEN": "${{ secrets.PUSHPLUS_TOKEN || '' }}",
-    "PUSHPLUS_TOPIC": "${{ secrets.PUSHPLUS_TOPIC || '' }}",
-    "QMSG_KEY": "${{ secrets.QMSG_KEY || '' }}",
-    "QMSG_TYPE": "${{ secrets.QMSG_TYPE || '' }}",
-    "QYWX_AGENTID": "${{ secrets.QYWX_AGENTID || '' }}",
-    "QYWX_CORPID": "${{ secrets.QYWX_CORPID || '' }}",
-    "QYWX_CORPSECRET": "${{ secrets.QYWX_CORPSECRET || '' }}",
-    "QYWX_KEY": "${{ secrets.QYWX_KEY || '' }}",
-    "QYWX_MEDIA_ID": "${{ secrets.QYWX_MEDIA_ID || '' }}",
-    "QYWX_TOUSER": "${{ secrets.QYWX_TOUSER || '' }}",
-    "SCKEY": "${{ secrets.SCKEY || '' }}",
-    "SENDKEY": "${{ secrets.SENDKEY || '' }}",
-    "TG_API_HOST": "${{ secrets.TG_API_HOST || '' }}",
-    "TG_BOT_TOKEN": "${{ secrets.TG_BOT_TOKEN || '' }}",
-    "TG_PROXY": "${{ secrets.TG_PROXY || '' }}",
-    "TG_USER_ID": "${{ secrets.TG_USER_ID || '' }}",
-    "MERGE_PUSH": "${{ secrets.MERGE_PUSH || '' }}"
+    "BARK_URL": os.getenv("BARK_URL", ""),
+    "COOLPUSHEMAIL": os.getenv("COOLPUSHEMAIL", "false").lower() == "true",
+    "COOLPUSHQQ": os.getenv("COOLPUSHQQ", "false").lower() == "true",
+    "COOLPUSHSKEY": os.getenv("COOLPUSHSKEY", ""),
+    "COOLPUSHWX": os.getenv("COOLPUSHWX", "false").lower() == "true",
+    "DINGTALK_ACCESS_TOKEN": os.getenv("DINGTALK_ACCESS_TOKEN", ""),
+    "DINGTALK_SECRET": os.getenv("DINGTALK_SECRET", ""),
+    "FSKEY": os.getenv("FSKEY", ""),
+    "PUSHPLUS_TOKEN": os.getenv("PUSHPLUS_TOKEN", ""),
+    "PUSHPLUS_TOPIC": os.getenv("PUSHPLUS_TOPIC", ""),
+    "QMSG_KEY": os.getenv("QMSG_KEY", ""),
+    "QMSG_TYPE": os.getenv("QMSG_TYPE", ""),
+    "QYWX_AGENTID": os.getenv("QYWX_AGENTID", ""),
+    "QYWX_CORPID": os.getenv("QYWX_CORPID", ""),
+    "QYWX_CORPSECRET": os.getenv("QYWX_CORPSECRET", ""),
+    "QYWX_KEY": os.getenv("QYWX_KEY", ""),
+    "QYWX_MEDIA_ID": os.getenv("QYWX_MEDIA_ID", ""),
+    "QYWX_TOUSER": os.getenv("QYWX_TOUSER", ""),
+    "SCKEY": os.getenv("SCKEY", ""),
+    "SENDKEY": os.getenv("SENDKEY", ""),
+    "TG_API_HOST": os.getenv("TG_API_HOST", ""),
+    "TG_BOT_TOKEN": os.getenv("TG_BOT_TOKEN", ""),
+    "TG_PROXY": os.getenv("TG_PROXY", ""),
+    "TG_USER_ID": os.getenv("TG_USER_ID", ""),
+    "MERGE_PUSH": os.getenv("MERGE_PUSH", "")
 }
 
 # 添加平台配置（仅包含非空配置）
 platforms = {}
 
 # AcFun
-acfun_password = "${{ secrets.ACFUN_PASSWORD_1 || '' }}"
-acfun_phone = "${{ secrets.ACFUN_PHONE_1 || '' }}"
+acfun_password = os.getenv("ACFUN_PASSWORD_1", "")
+acfun_phone = os.getenv("ACFUN_PHONE_1", "")
 if acfun_password and acfun_phone:
     platforms["ACFUN"] = [{"password": acfun_password, "phone": acfun_phone}]
 
 # 阿里云盘
-aliyun_token = "${{ secrets.ALIYUN_REFRESH_TOKEN_1 || '' }}"
+aliyun_token = os.getenv("ALIYUN_REFRESH_TOKEN_1", "")
 if aliyun_token:
     platforms["ALIYUN"] = [{"refresh_token": aliyun_token}]
 
 # 奥拉星
-aolaxing_cookie = "${{ secrets.AOLAXING_COOKIE_1 || '' }}"
+aolaxing_cookie = os.getenv("AOLAXING_COOKIE_1", "")
 if aolaxing_cookie:
     platforms["AOLAXING"] = [{"cookie": aolaxing_cookie}]
 
 # 百度站点
-baidu_data_url = "${{ secrets.BAIDU_DATA_URL_1 || '' }}"
-baidu_submit_url = "${{ secrets.BAIDU_SUBMIT_URL_1 || '' }}"
+baidu_data_url = os.getenv("BAIDU_DATA_URL_1", "")
+baidu_submit_url = os.getenv("BAIDU_SUBMIT_URL_1", "")
 if baidu_data_url and baidu_submit_url:
     platforms["BAIDU"] = [{
         "data_url": baidu_data_url,
         "submit_url": baidu_submit_url,
-        "times": int("${{ secrets.BAIDU_TIMES_1 || '10' }}")
+        "times": int(os.getenv("BAIDU_TIMES_1", "10"))
     }]
 
 # Bilibili
-bilibili_cookie = "${{ secrets.BILIBILI_COOKIE_1 || '' }}"
+bilibili_cookie = os.getenv("BILIBILI_COOKIE_1", "")
 if bilibili_cookie:
     platforms["BILIBILI"] = [{
-        "coin_num": int("${{ secrets.BILIBILI_COIN_NUM_1 || '0' }}"),
-        "coin_type": int("${{ secrets.BILIBILI_COIN_TYPE_1 || '1' }}"),
+        "coin_num": int(os.getenv("BILIBILI_COIN_NUM_1", "0")),
+        "coin_type": int(os.getenv("BILIBILI_COIN_TYPE_1", "1")),
         "cookie": bilibili_cookie,
-        "silver2coin": "${{ secrets.BILIBILI_SILVER2COIN_1 || 'true' }}".lower() == "true"
+        "silver2coin": os.getenv("BILIBILI_SILVER2COIN_1", "true").lower() == "true"
     }]
 
 # 恩山论坛
-enshan_cookie = "${{ secrets.ENSHAN_COOKIE_1 || '' }}"
+enshan_cookie = os.getenv("ENSHAN_COOKIE_1", "")
 if enshan_cookie:
     platforms["ENSHAN"] = [{"cookie": enshan_cookie}]
 
 # i茅台
-imaotai_city = "${{ secrets.IMAOTAI_CITY_1 || '' }}"
-imaotai_mobile = "${{ secrets.IMAOTAI_MOBILE_1 || '' }}"
-imaotai_token = "${{ secrets.IMAOTAI_TOKEN_1 || '' }}"
+imaotai_city = os.getenv("IMAOTAI_CITY_1", "")
+imaotai_mobile = os.getenv("IMAOTAI_MOBILE_1", "")
+imaotai_token = os.getenv("IMAOTAI_TOKEN_1", "")
 if imaotai_city and imaotai_mobile and imaotai_token:
     platforms["IMAOTAI"] = [{
         "city": imaotai_city,
-        "lat": "${{ secrets.IMAOTAI_LAT_1 || '' }}",
-        "lng": "${{ secrets.IMAOTAI_LNG_1 || '' }}",
+        "lat": os.getenv("IMAOTAI_LAT_1", ""),
+        "lng": os.getenv("IMAOTAI_LNG_1", ""),
         "mobile": imaotai_mobile,
-        "province": "${{ secrets.IMAOTAI_PROVINCE_1 || '' }}",
+        "province": os.getenv("IMAOTAI_PROVINCE_1", ""),
         "token": imaotai_token,
-        "userid": "${{ secrets.IMAOTAI_USERID_1 || '' }}"
+        "userid": os.getenv("IMAOTAI_USERID_1", "")
     }]
 
 # 爱奇艺
-iqiyi_cookie = "${{ secrets.IQIYI_COOKIE_1 || '' }}"
+iqiyi_cookie = os.getenv("IQIYI_COOKIE_1", "")
 if iqiyi_cookie:
     platforms["IQIYI"] = [{"cookie": iqiyi_cookie}]
 
 # 全民K歌
-kgqq_cookie = "${{ secrets.KGQQ_COOKIE_1 || '' }}"
+kgqq_cookie = os.getenv("KGQQ_COOKIE_1", "")
 if kgqq_cookie:
     platforms["KGQQ"] = [{"cookie": kgqq_cookie}]
 
 # 小米运动
-mimotion_password = "${{ secrets.MIMOTION_PASSWORD_1 || '' }}"
-mimotion_phone = "${{ secrets.MIMOTION_PHONE_1 || '' }}"
+mimotion_password = os.getenv("MIMOTION_PASSWORD_1", "")
+mimotion_phone = os.getenv("MIMOTION_PHONE_1", "")
 if mimotion_password and mimotion_phone:
     platforms["MIMOTION"] = [{
-        "max_step": "${{ secrets.MIMOTION_MAX_STEP_1 || '20000' }}",
-        "min_step": "${{ secrets.MIMOTION_MIN_STEP_1 || '10000' }}",
+        "max_step": os.getenv("MIMOTION_MAX_STEP_1", "20000"),
+        "min_step": os.getenv("MIMOTION_MIN_STEP_1", "10000"),
         "password": mimotion_password,
         "phone": mimotion_phone
     }]
 
 # 什么值得买
-smzdm_cookie = "${{ secrets.SMZDM_COOKIE_1 || '' }}"
+smzdm_cookie = os.getenv("SMZDM_COOKIE_1", "")
 if smzdm_cookie:
     platforms["SMZDM"] = [{"cookie": smzdm_cookie}]
 
 # 百度贴吧
-tieba_cookie = "${{ secrets.TIEBA_COOKIE_1 || '' }}"
+tieba_cookie = os.getenv("TIEBA_COOKIE_1", "")
 if tieba_cookie:
     platforms["TIEBA"] = [{"cookie": tieba_cookie}]
 
 # V2EX
-v2ex_cookie = "${{ secrets.V2EX_COOKIE_1 || '' }}"
+v2ex_cookie = os.getenv("V2EX_COOKIE_1", "")
 if v2ex_cookie:
     v2ex_config = {"cookie": v2ex_cookie}
-    v2ex_proxy = "${{ secrets.V2EX_PROXY_1 || '' }}"
+    v2ex_proxy = os.getenv("V2EX_PROXY_1", "")
     if v2ex_proxy:
         v2ex_config["proxy"] = v2ex_proxy
     platforms["V2EX"] = [v2ex_config]
 
 # 有道云笔记
-youdao_cookie = "${{ secrets.YOUDAO_COOKIE_1 || '' }}"
+youdao_cookie = os.getenv("YOUDAO_COOKIE_1", "")
 if youdao_cookie:
     platforms["YOUDAO"] = [{"cookie": youdao_cookie}]
 
