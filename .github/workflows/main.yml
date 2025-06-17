@@ -11,7 +11,11 @@ on:
         required: false
         default: false
         type: boolean
-
+        
+permissions:
+  contents: read
+  actions: write  # 添加写入Actions变量的权限
+  
 env:
   TZ: Asia/Shanghai
 
