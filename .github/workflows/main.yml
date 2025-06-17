@@ -39,14 +39,14 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y curl
         
-    - name: 生成配置文件 (方案1 - 直接配置)
-      if: ${{ secrets.CONFIG_JSON != '' }}
-      run: |
-        echo "使用直接配置方案"
-        echo '${{ secrets.CONFIG_JSON }}' > config.json
+    # - name: 生成配置文件 (方案1 - 直接配置)
+    #   if: ${{ secrets.CONFIG_JSON != '' }}
+    #   run: |
+    #     echo "使用直接配置方案"
+    #     echo '${{ secrets.CONFIG_JSON }}' > config.json
         
     - name: 生成配置文件 (方案2 - 模板配置)
-      if: ${{ secrets.CONFIG_JSON == '' }}
+      # if: ${{ secrets.CONFIG_JSON == '' }}
       env:
         BARK_URL: ${{ secrets.BARK_URL || '' }}
         COOLPUSHEMAIL: ${{ secrets.COOLPUSHEMAIL || 'false' }}
