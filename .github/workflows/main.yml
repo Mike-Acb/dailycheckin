@@ -1,0 +1,268 @@
+name: Daily Check-in
+
+on:
+  schedule:
+    # 每天北京时间上午8点执行 (UTC时间0点)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: '启用调试模式'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  daily-checkin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+        
+    - name: 安装系统依赖
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl
+        
+    - name: 生成配置文件 (方案1 - 直接配置)
+      if: ${{ secrets.CONFIG_YAML != '' }}
+      run: |
+        echo "使用直接配置方案"
+        echo '${{ secrets.CONFIG_YAML }}' > config.yaml
+        
+    - name: 生成配置文件 (方案2 - 模板配置)
+      if: ${{ secrets.CONFIG_YAML == '' }}
+      env:
+        # 爱奇艺配置
+        IQIYI_ENABLED: ${{ secrets.IQIYI_ENABLED || 'false' }}
+        IQIYI_USERNAME: ${{ secrets.IQIYI_USERNAME || '' }}
+        IQIYI_PASSWORD: ${{ secrets.IQIYI_PASSWORD || '' }}
+        
+        # 全民K歌配置
+        KGQQ_ENABLED: ${{ secrets.KGQQ_ENABLED || 'false' }}
+        KGQQ_USERNAME: ${{ secrets.KGQQ_USERNAME || '' }}
+        KGQQ_PASSWORD: ${{ secrets.KGQQ_PASSWORD || '' }}
+        
+        # 有道云笔记配置
+        YOUDAO_ENABLED: ${{ secrets.YOUDAO_ENABLED || 'false' }}
+        YOUDAO_USERNAME: ${{ secrets.YOUDAO_USERNAME || '' }}
+        YOUDAO_PASSWORD: ${{ secrets.YOUDAO_PASSWORD || '' }}
+        
+        # 百度贴吧配置
+        TIEBA_ENABLED: ${{ secrets.TIEBA_ENABLED || 'false' }}
+        TIEBA_USERNAME: ${{ secrets.TIEBA_USERNAME || '' }}
+        TIEBA_PASSWORD: ${{ secrets.TIEBA_PASSWORD || '' }}
+        
+        # Bilibili配置
+        BILIBILI_ENABLED: ${{ secrets.BILIBILI_ENABLED || 'false' }}
+        BILIBILI_USERNAME: ${{ secrets.BILIBILI_USERNAME || '' }}
+        BILIBILI_PASSWORD: ${{ secrets.BILIBILI_PASSWORD || '' }}
+        BILIBILI_SESSDATA: ${{ secrets.BILIBILI_SESSDATA || '' }}
+        BILIBILI_BILI_JCT: ${{ secrets.BILIBILI_BILI_JCT || '' }}
+        BILIBILI_DEDEUSERID: ${{ secrets.BILIBILI_DEDEUSERID || '' }}
+        
+        # V2EX配置
+        V2EX_ENABLED: ${{ secrets.V2EX_ENABLED || 'false' }}
+        V2EX_USERNAME: ${{ secrets.V2EX_USERNAME || '' }}
+        V2EX_PASSWORD: ${{ secrets.V2EX_PASSWORD || '' }}
+        
+        # AcFun配置
+        ACFUN_ENABLED: ${{ secrets.ACFUN_ENABLED || 'false' }}
+        ACFUN_USERNAME: ${{ secrets.ACFUN_USERNAME || '' }}
+        ACFUN_PASSWORD: ${{ secrets.ACFUN_PASSWORD || '' }}
+        
+        # 什么值得买配置
+        SMZDM_ENABLED: ${{ secrets.SMZDM_ENABLED || 'false' }}
+        SMZDM_USERNAME: ${{ secrets.SMZDM_USERNAME || '' }}
+        SMZDM_PASSWORD: ${{ secrets.SMZDM_PASSWORD || '' }}
+        
+        # 阿里云盘配置
+        ALIYUN_ENABLED: ${{ secrets.ALIYUN_ENABLED || 'false' }}
+        ALIYUN_REFRESH_TOKEN: ${{ secrets.ALIYUN_REFRESH_TOKEN || '' }}
+        
+        # i茅台配置
+        IMAOTAI_ENABLED: ${{ secrets.IMAOTAI_ENABLED || 'false' }}
+        IMAOTAI_USERNAME: ${{ secrets.IMAOTAI_USERNAME || '' }}
+        IMAOTAI_PASSWORD: ${{ secrets.IMAOTAI_PASSWORD || '' }}
+        IMAOTAI_DEVICE_ID: ${{ secrets.IMAOTAI_DEVICE_ID || '' }}
+        
+        # 小米运动配置
+        MIMOTION_ENABLED: ${{ secrets.MIMOTION_ENABLED || 'false' }}
+        MIMOTION_USERNAME: ${{ secrets.MIMOTION_USERNAME || '' }}
+        MIMOTION_PASSWORD: ${{ secrets.MIMOTION_PASSWORD || '' }}
+        MIMOTION_STEP: ${{ secrets.MIMOTION_STEP || '20000' }}
+        
+        # 百度搜索资源平台配置
+        BAIDU_ENABLED: ${{ secrets.BAIDU_ENABLED || 'false' }}
+        BAIDU_USERNAME: ${{ secrets.BAIDU_USERNAME || '' }}
+        BAIDU_PASSWORD: ${{ secrets.BAIDU_PASSWORD || '' }}
+        BAIDU_SITE_LIST: ${{ secrets.BAIDU_SITE_LIST || '' }}
+        
+        # 恩山论坛配置
+        ENSHAN_ENABLED: ${{ secrets.ENSHAN_ENABLED || 'false' }}
+        ENSHAN_USERNAME: ${{ secrets.ENSHAN_USERNAME || '' }}
+        ENSHAN_PASSWORD: ${{ secrets.ENSHAN_PASSWORD || '' }}
+        
+        # 奥拉星配置
+        AOLAXING_ENABLED: ${{ secrets.AOLAXING_ENABLED || 'false' }}
+        AOLAXING_USERNAME: ${{ secrets.AOLAXING_USERNAME || '' }}
+        AOLAXING_PASSWORD: ${{ secrets.AOLAXING_PASSWORD || '' }}
+        
+        # 通知配置
+        NOTIFICATION_ENABLED: ${{ secrets.NOTIFICATION_ENABLED || 'false' }}
+        NOTIFICATION_TYPE: ${{ secrets.NOTIFICATION_TYPE || 'none' }}
+        
+        # 钉钉通知
+        DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK || '' }}
+        DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET || '' }}
+        
+        # 企业微信通知
+        QYWX_WEBHOOK: ${{ secrets.QYWX_WEBHOOK || '' }}
+        
+        # Server酱通知
+        SERVERCHAN_SCKEY: ${{ secrets.SERVERCHAN_SCKEY || '' }}
+        
+        # Telegram通知
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || '' }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '' }}
+        
+        # PushPlus通知
+        PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN || '' }}
+      run: |
+        echo "使用模板配置方案"
+        if [ -f "config.yaml.template" ]; then
+          python3 scripts/generate_config.py
+        else
+          echo "警告：config.yaml.template 文件不存在，创建默认配置"
+          cat > config.yaml << 'EOF'
+        # DailyCheckIn 配置文件
+        # 此文件由 GitHub Action 自动生成
+        
+        # 签到任务配置
+        jobs:
+          # 爱奇艺签到
+          iqiyi:
+            enabled: ${IQIYI_ENABLED}
+            username: "${IQIYI_USERNAME}"
+            password: "${IQIYI_PASSWORD}"
+        
+          # 全民K歌签到  
+          kgqq:
+            enabled: ${KGQQ_ENABLED}
+            username: "${KGQQ_USERNAME}"
+            password: "${KGQQ_PASSWORD}"
+        
+          # 有道云笔记签到
+          youdao:
+            enabled: ${YOUDAO_ENABLED}
+            username: "${YOUDAO_USERNAME}"
+            password: "${YOUDAO_PASSWORD}"
+        
+          # 百度贴吧签到
+          tieba:
+            enabled: ${TIEBA_ENABLED}
+            username: "${TIEBA_USERNAME}"
+            password: "${TIEBA_PASSWORD}"
+        
+          # Bilibili签到
+          bilibili:
+            enabled: ${BILIBILI_ENABLED}
+            username: "${BILIBILI_USERNAME}"
+            password: "${BILIBILI_PASSWORD}"
+            sessdata: "${BILIBILI_SESSDATA}"
+            bili_jct: "${BILIBILI_BILI_JCT}"
+            dedeuserid: "${BILIBILI_DEDEUSERID}"
+        
+          # V2EX签到
+          v2ex:
+            enabled: ${V2EX_ENABLED}
+            username: "${V2EX_USERNAME}"
+            password: "${V2EX_PASSWORD}"
+        
+        # 通知配置
+        notification:
+          enabled: ${NOTIFICATION_ENABLED}
+          type: "${NOTIFICATION_TYPE}"
+          dingtalk:
+            webhook: "${DINGTALK_WEBHOOK}"
+            secret: "${DINGTALK_SECRET}"
+          qywx:
+            webhook: "${QYWX_WEBHOOK}"
+          serverchan:
+            sckey: "${SERVERCHAN_SCKEY}"
+          telegram:
+            bot_token: "${TELEGRAM_BOT_TOKEN}"
+            chat_id: "${TELEGRAM_CHAT_ID}"
+          pushplus:
+            token: "${PUSHPLUS_TOKEN}"
+        EOF
+          envsubst < config.yaml > config_final.yaml && mv config_final.yaml config.yaml
+        fi
+        
+    - name: 验证配置文件
+      run: |
+        if [ ! -f "config.yaml" ]; then
+          echo "错误：配置文件生成失败"
+          exit 1
+        fi
+        
+        echo "配置文件生成成功"
+        if [ "${{ inputs.debug }}" == "true" ]; then
+          echo "=== 配置文件内容 (调试模式) ==="
+          # 只显示非敏感信息
+          grep -E "^[[:space:]]*[a-zA-Z_]+[[:space:]]*:" config.yaml || echo "配置文件格式可能有问题"
+        fi
+        
+    - name: 安装 Python 依赖
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        else
+          # 安装常用依赖
+          pip install pyyaml requests schedule
+        fi
+        
+    - name: 执行签到脚本
+      run: |
+        echo "开始执行签到任务..."
+        
+        # 检查主入口文件
+        if [ -f "main.py" ]; then
+          python main.py
+        elif [ -f "dailycheckin/main.py" ]; then
+          python dailycheckin/main.py
+        elif [ -f "run.py" ]; then
+          python run.py
+        else
+          echo "警告：未找到主入口文件，尝试安装并运行 dailycheckin 包"
+          pip install dailycheckin
+          dailycheckin
+        fi
+        
+    - name: 清理敏感文件
+      if: always()
+      run: |
+        rm -f config.yaml
+        echo "敏感文件已清理"
+        
+    - name: 上传执行日志
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: execution-logs
+        path: |
+          *.log
+          logs/
+        retention-days: 7 
