@@ -102,152 +102,152 @@ jobs:
       run: |
         echo "使用模板配置方案"
         python3 << 'EOF'
-import os
-import json
-
-# 创建基础配置结构
-config = {
-    "BARK_URL": os.getenv("BARK_URL", ""),
-    "COOLPUSHEMAIL": os.getenv("COOLPUSHEMAIL", "false").lower() == "true",
-    "COOLPUSHQQ": os.getenv("COOLPUSHQQ", "false").lower() == "true",
-    "COOLPUSHSKEY": os.getenv("COOLPUSHSKEY", ""),
-    "COOLPUSHWX": os.getenv("COOLPUSHWX", "false").lower() == "true",
-    "DINGTALK_ACCESS_TOKEN": os.getenv("DINGTALK_ACCESS_TOKEN", ""),
-    "DINGTALK_SECRET": os.getenv("DINGTALK_SECRET", ""),
-    "FSKEY": os.getenv("FSKEY", ""),
-    "PUSHPLUS_TOKEN": os.getenv("PUSHPLUS_TOKEN", ""),
-    "PUSHPLUS_TOPIC": os.getenv("PUSHPLUS_TOPIC", ""),
-    "QMSG_KEY": os.getenv("QMSG_KEY", ""),
-    "QMSG_TYPE": os.getenv("QMSG_TYPE", ""),
-    "QYWX_AGENTID": os.getenv("QYWX_AGENTID", ""),
-    "QYWX_CORPID": os.getenv("QYWX_CORPID", ""),
-    "QYWX_CORPSECRET": os.getenv("QYWX_CORPSECRET", ""),
-    "QYWX_KEY": os.getenv("QYWX_KEY", ""),
-    "QYWX_MEDIA_ID": os.getenv("QYWX_MEDIA_ID", ""),
-    "QYWX_TOUSER": os.getenv("QYWX_TOUSER", ""),
-    "SCKEY": os.getenv("SCKEY", ""),
-    "SENDKEY": os.getenv("SENDKEY", ""),
-    "TG_API_HOST": os.getenv("TG_API_HOST", ""),
-    "TG_BOT_TOKEN": os.getenv("TG_BOT_TOKEN", ""),
-    "TG_PROXY": os.getenv("TG_PROXY", ""),
-    "TG_USER_ID": os.getenv("TG_USER_ID", ""),
-    "MERGE_PUSH": os.getenv("MERGE_PUSH", "")
-}
-
-# 添加平台配置（仅包含非空配置）
-platforms = {}
-
-# AcFun
-acfun_password = os.getenv("ACFUN_PASSWORD_1", "")
-acfun_phone = os.getenv("ACFUN_PHONE_1", "")
-if acfun_password and acfun_phone:
-    platforms["ACFUN"] = [{"password": acfun_password, "phone": acfun_phone}]
-
-# 阿里云盘
-aliyun_token = os.getenv("ALIYUN_REFRESH_TOKEN_1", "")
-if aliyun_token:
-    platforms["ALIYUN"] = [{"refresh_token": aliyun_token}]
-
-# 奥拉星
-aolaxing_cookie = os.getenv("AOLAXING_COOKIE_1", "")
-if aolaxing_cookie:
-    platforms["AOLAXING"] = [{"cookie": aolaxing_cookie}]
-
-# 百度站点
-baidu_data_url = os.getenv("BAIDU_DATA_URL_1", "")
-baidu_submit_url = os.getenv("BAIDU_SUBMIT_URL_1", "")
-if baidu_data_url and baidu_submit_url:
-    platforms["BAIDU"] = [{
-        "data_url": baidu_data_url,
-        "submit_url": baidu_submit_url,
-        "times": int(os.getenv("BAIDU_TIMES_1", "10"))
-    }]
-
-# Bilibili
-bilibili_cookie = os.getenv("BILIBILI_COOKIE_1", "")
-if bilibili_cookie:
-    platforms["BILIBILI"] = [{
-        "coin_num": int(os.getenv("BILIBILI_COIN_NUM_1", "0")),
-        "coin_type": int(os.getenv("BILIBILI_COIN_TYPE_1", "1")),
-        "cookie": bilibili_cookie,
-        "silver2coin": os.getenv("BILIBILI_SILVER2COIN_1", "true").lower() == "true"
-    }]
-
-# 恩山论坛
-enshan_cookie = os.getenv("ENSHAN_COOKIE_1", "")
-if enshan_cookie:
-    platforms["ENSHAN"] = [{"cookie": enshan_cookie}]
-
-# i茅台
-imaotai_city = os.getenv("IMAOTAI_CITY_1", "")
-imaotai_mobile = os.getenv("IMAOTAI_MOBILE_1", "")
-imaotai_token = os.getenv("IMAOTAI_TOKEN_1", "")
-if imaotai_city and imaotai_mobile and imaotai_token:
-    platforms["IMAOTAI"] = [{
-        "city": imaotai_city,
-        "lat": os.getenv("IMAOTAI_LAT_1", ""),
-        "lng": os.getenv("IMAOTAI_LNG_1", ""),
-        "mobile": imaotai_mobile,
-        "province": os.getenv("IMAOTAI_PROVINCE_1", ""),
-        "token": imaotai_token,
-        "userid": os.getenv("IMAOTAI_USERID_1", "")
-    }]
-
-# 爱奇艺
-iqiyi_cookie = os.getenv("IQIYI_COOKIE_1", "")
-if iqiyi_cookie:
-    platforms["IQIYI"] = [{"cookie": iqiyi_cookie}]
-
-# 全民K歌
-kgqq_cookie = os.getenv("KGQQ_COOKIE_1", "")
-if kgqq_cookie:
-    platforms["KGQQ"] = [{"cookie": kgqq_cookie}]
-
-# 小米运动
-mimotion_password = os.getenv("MIMOTION_PASSWORD_1", "")
-mimotion_phone = os.getenv("MIMOTION_PHONE_1", "")
-if mimotion_password and mimotion_phone:
-    platforms["MIMOTION"] = [{
-        "max_step": os.getenv("MIMOTION_MAX_STEP_1", "20000"),
-        "min_step": os.getenv("MIMOTION_MIN_STEP_1", "10000"),
-        "password": mimotion_password,
-        "phone": mimotion_phone
-    }]
-
-# 什么值得买
-smzdm_cookie = os.getenv("SMZDM_COOKIE_1", "")
-if smzdm_cookie:
-    platforms["SMZDM"] = [{"cookie": smzdm_cookie}]
-
-# 百度贴吧
-tieba_cookie = os.getenv("TIEBA_COOKIE_1", "")
-if tieba_cookie:
-    platforms["TIEBA"] = [{"cookie": tieba_cookie}]
-
-# V2EX
-v2ex_cookie = os.getenv("V2EX_COOKIE_1", "")
-if v2ex_cookie:
-    v2ex_config = {"cookie": v2ex_cookie}
-    v2ex_proxy = os.getenv("V2EX_PROXY_1", "")
-    if v2ex_proxy:
-        v2ex_config["proxy"] = v2ex_proxy
-    platforms["V2EX"] = [v2ex_config]
-
-# 有道云笔记
-youdao_cookie = os.getenv("YOUDAO_COOKIE_1", "")
-if youdao_cookie:
-    platforms["YOUDAO"] = [{"cookie": youdao_cookie}]
-
-# 合并配置
-config.update(platforms)
-
-# 保存配置文件
-with open("config.json", "w", encoding="utf-8") as f:
-    json.dump(config, f, ensure_ascii=False, indent=2)
-
-print("配置文件生成完成")
-print(f"共生成 {len(platforms)} 个平台配置")
-EOF
+        import os
+        import json
+        
+        # 创建基础配置结构
+        config = {
+            "BARK_URL": os.getenv("BARK_URL", ""),
+            "COOLPUSHEMAIL": os.getenv("COOLPUSHEMAIL", "false").lower() == "true",
+            "COOLPUSHQQ": os.getenv("COOLPUSHQQ", "false").lower() == "true",
+            "COOLPUSHSKEY": os.getenv("COOLPUSHSKEY", ""),
+            "COOLPUSHWX": os.getenv("COOLPUSHWX", "false").lower() == "true",
+            "DINGTALK_ACCESS_TOKEN": os.getenv("DINGTALK_ACCESS_TOKEN", ""),
+            "DINGTALK_SECRET": os.getenv("DINGTALK_SECRET", ""),
+            "FSKEY": os.getenv("FSKEY", ""),
+            "PUSHPLUS_TOKEN": os.getenv("PUSHPLUS_TOKEN", ""),
+            "PUSHPLUS_TOPIC": os.getenv("PUSHPLUS_TOPIC", ""),
+            "QMSG_KEY": os.getenv("QMSG_KEY", ""),
+            "QMSG_TYPE": os.getenv("QMSG_TYPE", ""),
+            "QYWX_AGENTID": os.getenv("QYWX_AGENTID", ""),
+            "QYWX_CORPID": os.getenv("QYWX_CORPID", ""),
+            "QYWX_CORPSECRET": os.getenv("QYWX_CORPSECRET", ""),
+            "QYWX_KEY": os.getenv("QYWX_KEY", ""),
+            "QYWX_MEDIA_ID": os.getenv("QYWX_MEDIA_ID", ""),
+            "QYWX_TOUSER": os.getenv("QYWX_TOUSER", ""),
+            "SCKEY": os.getenv("SCKEY", ""),
+            "SENDKEY": os.getenv("SENDKEY", ""),
+            "TG_API_HOST": os.getenv("TG_API_HOST", ""),
+            "TG_BOT_TOKEN": os.getenv("TG_BOT_TOKEN", ""),
+            "TG_PROXY": os.getenv("TG_PROXY", ""),
+            "TG_USER_ID": os.getenv("TG_USER_ID", ""),
+            "MERGE_PUSH": os.getenv("MERGE_PUSH", "")
+        }
+        
+        # 添加平台配置（仅包含非空配置）
+        platforms = {}
+        
+        # AcFun
+        acfun_password = os.getenv("ACFUN_PASSWORD_1", "")
+        acfun_phone = os.getenv("ACFUN_PHONE_1", "")
+        if acfun_password and acfun_phone:
+            platforms["ACFUN"] = [{"password": acfun_password, "phone": acfun_phone}]
+        
+        # 阿里云盘
+        aliyun_token = os.getenv("ALIYUN_REFRESH_TOKEN_1", "")
+        if aliyun_token:
+            platforms["ALIYUN"] = [{"refresh_token": aliyun_token}]
+        
+        # 奥拉星
+        aolaxing_cookie = os.getenv("AOLAXING_COOKIE_1", "")
+        if aolaxing_cookie:
+            platforms["AOLAXING"] = [{"cookie": aolaxing_cookie}]
+        
+        # 百度站点
+        baidu_data_url = os.getenv("BAIDU_DATA_URL_1", "")
+        baidu_submit_url = os.getenv("BAIDU_SUBMIT_URL_1", "")
+        if baidu_data_url and baidu_submit_url:
+            platforms["BAIDU"] = [{
+                "data_url": baidu_data_url,
+                "submit_url": baidu_submit_url,
+                "times": int(os.getenv("BAIDU_TIMES_1", "10"))
+            }]
+        
+        # Bilibili
+        bilibili_cookie = os.getenv("BILIBILI_COOKIE_1", "")
+        if bilibili_cookie:
+            platforms["BILIBILI"] = [{
+                "coin_num": int(os.getenv("BILIBILI_COIN_NUM_1", "0")),
+                "coin_type": int(os.getenv("BILIBILI_COIN_TYPE_1", "1")),
+                "cookie": bilibili_cookie,
+                "silver2coin": os.getenv("BILIBILI_SILVER2COIN_1", "true").lower() == "true"
+            }]
+        
+        # 恩山论坛
+        enshan_cookie = os.getenv("ENSHAN_COOKIE_1", "")
+        if enshan_cookie:
+            platforms["ENSHAN"] = [{"cookie": enshan_cookie}]
+        
+        # i茅台
+        imaotai_city = os.getenv("IMAOTAI_CITY_1", "")
+        imaotai_mobile = os.getenv("IMAOTAI_MOBILE_1", "")
+        imaotai_token = os.getenv("IMAOTAI_TOKEN_1", "")
+        if imaotai_city and imaotai_mobile and imaotai_token:
+            platforms["IMAOTAI"] = [{
+                "city": imaotai_city,
+                "lat": os.getenv("IMAOTAI_LAT_1", ""),
+                "lng": os.getenv("IMAOTAI_LNG_1", ""),
+                "mobile": imaotai_mobile,
+                "province": os.getenv("IMAOTAI_PROVINCE_1", ""),
+                "token": imaotai_token,
+                "userid": os.getenv("IMAOTAI_USERID_1", "")
+            }]
+        
+        # 爱奇艺
+        iqiyi_cookie = os.getenv("IQIYI_COOKIE_1", "")
+        if iqiyi_cookie:
+            platforms["IQIYI"] = [{"cookie": iqiyi_cookie}]
+        
+        # 全民K歌
+        kgqq_cookie = os.getenv("KGQQ_COOKIE_1", "")
+        if kgqq_cookie:
+            platforms["KGQQ"] = [{"cookie": kgqq_cookie}]
+        
+        # 小米运动
+        mimotion_password = os.getenv("MIMOTION_PASSWORD_1", "")
+        mimotion_phone = os.getenv("MIMOTION_PHONE_1", "")
+        if mimotion_password and mimotion_phone:
+            platforms["MIMOTION"] = [{
+                "max_step": os.getenv("MIMOTION_MAX_STEP_1", "20000"),
+                "min_step": os.getenv("MIMOTION_MIN_STEP_1", "10000"),
+                "password": mimotion_password,
+                "phone": mimotion_phone
+            }]
+        
+        # 什么值得买
+        smzdm_cookie = os.getenv("SMZDM_COOKIE_1", "")
+        if smzdm_cookie:
+            platforms["SMZDM"] = [{"cookie": smzdm_cookie}]
+        
+        # 百度贴吧
+        tieba_cookie = os.getenv("TIEBA_COOKIE_1", "")
+        if tieba_cookie:
+            platforms["TIEBA"] = [{"cookie": tieba_cookie}]
+        
+        # V2EX
+        v2ex_cookie = os.getenv("V2EX_COOKIE_1", "")
+        if v2ex_cookie:
+            v2ex_config = {"cookie": v2ex_cookie}
+            v2ex_proxy = os.getenv("V2EX_PROXY_1", "")
+            if v2ex_proxy:
+                v2ex_config["proxy"] = v2ex_proxy
+            platforms["V2EX"] = [v2ex_config]
+        
+        # 有道云笔记
+        youdao_cookie = os.getenv("YOUDAO_COOKIE_1", "")
+        if youdao_cookie:
+            platforms["YOUDAO"] = [{"cookie": youdao_cookie}]
+        
+        # 合并配置
+        config.update(platforms)
+        
+        # 保存配置文件
+        with open("config.json", "w", encoding="utf-8") as f:
+            json.dump(config, f, ensure_ascii=False, indent=2)
+        
+        print("配置文件生成完成")
+        print(f"共生成 {len(platforms)} 个平台配置")
+        EOF
         
     - name: 验证配置文件
       run: |
