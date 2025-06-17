@@ -268,32 +268,19 @@ jobs:
           echo "文件大小: $(du -h config.json | cut -f1)"
         fi
         
-    - name: 安装 Python 依赖
+    - name: 安装项目依赖
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        else
-          # 安装常用依赖
-          pip install requests schedule
-        fi
+        # 安装项目依赖
+        pip install -r requirements.txt
+        # 安装项目本身（开发模式）
+        pip install -e .
         
     - name: 执行签到脚本
       run: |
         echo "开始执行签到任务..."
-        
-        # 检查主入口文件
-        if [ -f "main.py" ]; then
-          python main.py
-        elif [ -f "dailycheckin/main.py" ]; then
-          python dailycheckin/main.py
-        elif [ -f "run.py" ]; then
-          python run.py
-        else
-          echo "警告：未找到主入口文件，尝试安装并运行 dailycheckin 包"
-          pip install dailycheckin
-          dailycheckin
-        fi
+        # 使用安装后的控制台命令
+        dailycheckin
         
     - name: 清理敏感文件
       if: always()
