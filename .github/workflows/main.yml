@@ -36,183 +36,166 @@ jobs:
         sudo apt-get install -y curl
         
     - name: 生成配置文件 (方案1 - 直接配置)
-      if: ${{ secrets.CONFIG_YAML != '' }}
+      if: ${{ secrets.CONFIG_JSON != '' }}
       run: |
         echo "使用直接配置方案"
-        echo '${{ secrets.CONFIG_YAML }}' > config.yaml
+        echo '${{ secrets.CONFIG_JSON }}' > config.json
         
     - name: 生成配置文件 (方案2 - 模板配置)
-      if: ${{ secrets.CONFIG_YAML == '' }}
-      env:
-        # 爱奇艺配置
-        IQIYI_ENABLED: ${{ secrets.IQIYI_ENABLED || 'false' }}
-        IQIYI_USERNAME: ${{ secrets.IQIYI_USERNAME || '' }}
-        IQIYI_PASSWORD: ${{ secrets.IQIYI_PASSWORD || '' }}
-        
-        # 全民K歌配置
-        KGQQ_ENABLED: ${{ secrets.KGQQ_ENABLED || 'false' }}
-        KGQQ_USERNAME: ${{ secrets.KGQQ_USERNAME || '' }}
-        KGQQ_PASSWORD: ${{ secrets.KGQQ_PASSWORD || '' }}
-        
-        # 有道云笔记配置
-        YOUDAO_ENABLED: ${{ secrets.YOUDAO_ENABLED || 'false' }}
-        YOUDAO_USERNAME: ${{ secrets.YOUDAO_USERNAME || '' }}
-        YOUDAO_PASSWORD: ${{ secrets.YOUDAO_PASSWORD || '' }}
-        
-        # 百度贴吧配置
-        TIEBA_ENABLED: ${{ secrets.TIEBA_ENABLED || 'false' }}
-        TIEBA_USERNAME: ${{ secrets.TIEBA_USERNAME || '' }}
-        TIEBA_PASSWORD: ${{ secrets.TIEBA_PASSWORD || '' }}
-        
-        # Bilibili配置
-        BILIBILI_ENABLED: ${{ secrets.BILIBILI_ENABLED || 'false' }}
-        BILIBILI_USERNAME: ${{ secrets.BILIBILI_USERNAME || '' }}
-        BILIBILI_PASSWORD: ${{ secrets.BILIBILI_PASSWORD || '' }}
-        BILIBILI_SESSDATA: ${{ secrets.BILIBILI_SESSDATA || '' }}
-        BILIBILI_BILI_JCT: ${{ secrets.BILIBILI_BILI_JCT || '' }}
-        BILIBILI_DEDEUSERID: ${{ secrets.BILIBILI_DEDEUSERID || '' }}
-        
-        # V2EX配置
-        V2EX_ENABLED: ${{ secrets.V2EX_ENABLED || 'false' }}
-        V2EX_USERNAME: ${{ secrets.V2EX_USERNAME || '' }}
-        V2EX_PASSWORD: ${{ secrets.V2EX_PASSWORD || '' }}
-        
-        # AcFun配置
-        ACFUN_ENABLED: ${{ secrets.ACFUN_ENABLED || 'false' }}
-        ACFUN_USERNAME: ${{ secrets.ACFUN_USERNAME || '' }}
-        ACFUN_PASSWORD: ${{ secrets.ACFUN_PASSWORD || '' }}
-        
-        # 什么值得买配置
-        SMZDM_ENABLED: ${{ secrets.SMZDM_ENABLED || 'false' }}
-        SMZDM_USERNAME: ${{ secrets.SMZDM_USERNAME || '' }}
-        SMZDM_PASSWORD: ${{ secrets.SMZDM_PASSWORD || '' }}
-        
-        # 阿里云盘配置
-        ALIYUN_ENABLED: ${{ secrets.ALIYUN_ENABLED || 'false' }}
-        ALIYUN_REFRESH_TOKEN: ${{ secrets.ALIYUN_REFRESH_TOKEN || '' }}
-        
-        # i茅台配置
-        IMAOTAI_ENABLED: ${{ secrets.IMAOTAI_ENABLED || 'false' }}
-        IMAOTAI_USERNAME: ${{ secrets.IMAOTAI_USERNAME || '' }}
-        IMAOTAI_PASSWORD: ${{ secrets.IMAOTAI_PASSWORD || '' }}
-        IMAOTAI_DEVICE_ID: ${{ secrets.IMAOTAI_DEVICE_ID || '' }}
-        
-        # 小米运动配置
-        MIMOTION_ENABLED: ${{ secrets.MIMOTION_ENABLED || 'false' }}
-        MIMOTION_USERNAME: ${{ secrets.MIMOTION_USERNAME || '' }}
-        MIMOTION_PASSWORD: ${{ secrets.MIMOTION_PASSWORD || '' }}
-        MIMOTION_STEP: ${{ secrets.MIMOTION_STEP || '20000' }}
-        
-        # 百度搜索资源平台配置
-        BAIDU_ENABLED: ${{ secrets.BAIDU_ENABLED || 'false' }}
-        BAIDU_USERNAME: ${{ secrets.BAIDU_USERNAME || '' }}
-        BAIDU_PASSWORD: ${{ secrets.BAIDU_PASSWORD || '' }}
-        BAIDU_SITE_LIST: ${{ secrets.BAIDU_SITE_LIST || '' }}
-        
-        # 恩山论坛配置
-        ENSHAN_ENABLED: ${{ secrets.ENSHAN_ENABLED || 'false' }}
-        ENSHAN_USERNAME: ${{ secrets.ENSHAN_USERNAME || '' }}
-        ENSHAN_PASSWORD: ${{ secrets.ENSHAN_PASSWORD || '' }}
-        
-        # 奥拉星配置
-        AOLAXING_ENABLED: ${{ secrets.AOLAXING_ENABLED || 'false' }}
-        AOLAXING_USERNAME: ${{ secrets.AOLAXING_USERNAME || '' }}
-        AOLAXING_PASSWORD: ${{ secrets.AOLAXING_PASSWORD || '' }}
-        
-        # 通知配置
-        NOTIFICATION_ENABLED: ${{ secrets.NOTIFICATION_ENABLED || 'false' }}
-        NOTIFICATION_TYPE: ${{ secrets.NOTIFICATION_TYPE || 'none' }}
-        
-        # 钉钉通知
-        DINGTALK_WEBHOOK: ${{ secrets.DINGTALK_WEBHOOK || '' }}
-        DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET || '' }}
-        
-        # 企业微信通知
-        QYWX_WEBHOOK: ${{ secrets.QYWX_WEBHOOK || '' }}
-        
-        # Server酱通知
-        SERVERCHAN_SCKEY: ${{ secrets.SERVERCHAN_SCKEY || '' }}
-        
-        # Telegram通知
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || '' }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '' }}
-        
-        # PushPlus通知
-        PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN || '' }}
+      if: ${{ secrets.CONFIG_JSON == '' }}
       run: |
         echo "使用模板配置方案"
-        if [ -f "config.yaml.template" ]; then
-          python3 scripts/generate_config.py
-        else
-          echo "警告：config.yaml.template 文件不存在，创建默认配置"
-          cat > config.yaml << 'EOF'
-        # DailyCheckIn 配置文件
-        # 此文件由 GitHub Action 自动生成
-        
-        # 签到任务配置
-        jobs:
-          # 爱奇艺签到
-          iqiyi:
-            enabled: ${IQIYI_ENABLED}
-            username: "${IQIYI_USERNAME}"
-            password: "${IQIYI_PASSWORD}"
-        
-          # 全民K歌签到  
-          kgqq:
-            enabled: ${KGQQ_ENABLED}
-            username: "${KGQQ_USERNAME}"
-            password: "${KGQQ_PASSWORD}"
-        
-          # 有道云笔记签到
-          youdao:
-            enabled: ${YOUDAO_ENABLED}
-            username: "${YOUDAO_USERNAME}"
-            password: "${YOUDAO_PASSWORD}"
-        
-          # 百度贴吧签到
-          tieba:
-            enabled: ${TIEBA_ENABLED}
-            username: "${TIEBA_USERNAME}"
-            password: "${TIEBA_PASSWORD}"
-        
-          # Bilibili签到
-          bilibili:
-            enabled: ${BILIBILI_ENABLED}
-            username: "${BILIBILI_USERNAME}"
-            password: "${BILIBILI_PASSWORD}"
-            sessdata: "${BILIBILI_SESSDATA}"
-            bili_jct: "${BILIBILI_BILI_JCT}"
-            dedeuserid: "${BILIBILI_DEDEUSERID}"
-        
-          # V2EX签到
-          v2ex:
-            enabled: ${V2EX_ENABLED}
-            username: "${V2EX_USERNAME}"
-            password: "${V2EX_PASSWORD}"
-        
-        # 通知配置
-        notification:
-          enabled: ${NOTIFICATION_ENABLED}
-          type: "${NOTIFICATION_TYPE}"
-          dingtalk:
-            webhook: "${DINGTALK_WEBHOOK}"
-            secret: "${DINGTALK_SECRET}"
-          qywx:
-            webhook: "${QYWX_WEBHOOK}"
-          serverchan:
-            sckey: "${SERVERCHAN_SCKEY}"
-          telegram:
-            bot_token: "${TELEGRAM_BOT_TOKEN}"
-            chat_id: "${TELEGRAM_CHAT_ID}"
-          pushplus:
-            token: "${PUSHPLUS_TOKEN}"
-        EOF
-          envsubst < config.yaml > config_final.yaml && mv config_final.yaml config.yaml
-        fi
+        python3 << 'EOF'
+import os
+import json
+
+# 创建基础配置结构
+config = {
+    "BARK_URL": "${{ secrets.BARK_URL || '' }}",
+    "COOLPUSHEMAIL": "${{ secrets.COOLPUSHEMAIL || 'false' }}".lower() == "true",
+    "COOLPUSHQQ": "${{ secrets.COOLPUSHQQ || 'false' }}".lower() == "true",
+    "COOLPUSHSKEY": "${{ secrets.COOLPUSHSKEY || '' }}",
+    "COOLPUSHWX": "${{ secrets.COOLPUSHWX || 'false' }}".lower() == "true",
+    "DINGTALK_ACCESS_TOKEN": "${{ secrets.DINGTALK_ACCESS_TOKEN || '' }}",
+    "DINGTALK_SECRET": "${{ secrets.DINGTALK_SECRET || '' }}",
+    "FSKEY": "${{ secrets.FSKEY || '' }}",
+    "PUSHPLUS_TOKEN": "${{ secrets.PUSHPLUS_TOKEN || '' }}",
+    "PUSHPLUS_TOPIC": "${{ secrets.PUSHPLUS_TOPIC || '' }}",
+    "QMSG_KEY": "${{ secrets.QMSG_KEY || '' }}",
+    "QMSG_TYPE": "${{ secrets.QMSG_TYPE || '' }}",
+    "QYWX_AGENTID": "${{ secrets.QYWX_AGENTID || '' }}",
+    "QYWX_CORPID": "${{ secrets.QYWX_CORPID || '' }}",
+    "QYWX_CORPSECRET": "${{ secrets.QYWX_CORPSECRET || '' }}",
+    "QYWX_KEY": "${{ secrets.QYWX_KEY || '' }}",
+    "QYWX_MEDIA_ID": "${{ secrets.QYWX_MEDIA_ID || '' }}",
+    "QYWX_TOUSER": "${{ secrets.QYWX_TOUSER || '' }}",
+    "SCKEY": "${{ secrets.SCKEY || '' }}",
+    "SENDKEY": "${{ secrets.SENDKEY || '' }}",
+    "TG_API_HOST": "${{ secrets.TG_API_HOST || '' }}",
+    "TG_BOT_TOKEN": "${{ secrets.TG_BOT_TOKEN || '' }}",
+    "TG_PROXY": "${{ secrets.TG_PROXY || '' }}",
+    "TG_USER_ID": "${{ secrets.TG_USER_ID || '' }}",
+    "MERGE_PUSH": "${{ secrets.MERGE_PUSH || '' }}"
+}
+
+# 添加平台配置（仅包含非空配置）
+platforms = {}
+
+# AcFun
+acfun_password = "${{ secrets.ACFUN_PASSWORD_1 || '' }}"
+acfun_phone = "${{ secrets.ACFUN_PHONE_1 || '' }}"
+if acfun_password and acfun_phone:
+    platforms["ACFUN"] = [{"password": acfun_password, "phone": acfun_phone}]
+
+# 阿里云盘
+aliyun_token = "${{ secrets.ALIYUN_REFRESH_TOKEN_1 || '' }}"
+if aliyun_token:
+    platforms["ALIYUN"] = [{"refresh_token": aliyun_token}]
+
+# 奥拉星
+aolaxing_cookie = "${{ secrets.AOLAXING_COOKIE_1 || '' }}"
+if aolaxing_cookie:
+    platforms["AOLAXING"] = [{"cookie": aolaxing_cookie}]
+
+# 百度站点
+baidu_data_url = "${{ secrets.BAIDU_DATA_URL_1 || '' }}"
+baidu_submit_url = "${{ secrets.BAIDU_SUBMIT_URL_1 || '' }}"
+if baidu_data_url and baidu_submit_url:
+    platforms["BAIDU"] = [{
+        "data_url": baidu_data_url,
+        "submit_url": baidu_submit_url,
+        "times": int("${{ secrets.BAIDU_TIMES_1 || '10' }}")
+    }]
+
+# Bilibili
+bilibili_cookie = "${{ secrets.BILIBILI_COOKIE_1 || '' }}"
+if bilibili_cookie:
+    platforms["BILIBILI"] = [{
+        "coin_num": int("${{ secrets.BILIBILI_COIN_NUM_1 || '0' }}"),
+        "coin_type": int("${{ secrets.BILIBILI_COIN_TYPE_1 || '1' }}"),
+        "cookie": bilibili_cookie,
+        "silver2coin": "${{ secrets.BILIBILI_SILVER2COIN_1 || 'true' }}".lower() == "true"
+    }]
+
+# 恩山论坛
+enshan_cookie = "${{ secrets.ENSHAN_COOKIE_1 || '' }}"
+if enshan_cookie:
+    platforms["ENSHAN"] = [{"cookie": enshan_cookie}]
+
+# i茅台
+imaotai_city = "${{ secrets.IMAOTAI_CITY_1 || '' }}"
+imaotai_mobile = "${{ secrets.IMAOTAI_MOBILE_1 || '' }}"
+imaotai_token = "${{ secrets.IMAOTAI_TOKEN_1 || '' }}"
+if imaotai_city and imaotai_mobile and imaotai_token:
+    platforms["IMAOTAI"] = [{
+        "city": imaotai_city,
+        "lat": "${{ secrets.IMAOTAI_LAT_1 || '' }}",
+        "lng": "${{ secrets.IMAOTAI_LNG_1 || '' }}",
+        "mobile": imaotai_mobile,
+        "province": "${{ secrets.IMAOTAI_PROVINCE_1 || '' }}",
+        "token": imaotai_token,
+        "userid": "${{ secrets.IMAOTAI_USERID_1 || '' }}"
+    }]
+
+# 爱奇艺
+iqiyi_cookie = "${{ secrets.IQIYI_COOKIE_1 || '' }}"
+if iqiyi_cookie:
+    platforms["IQIYI"] = [{"cookie": iqiyi_cookie}]
+
+# 全民K歌
+kgqq_cookie = "${{ secrets.KGQQ_COOKIE_1 || '' }}"
+if kgqq_cookie:
+    platforms["KGQQ"] = [{"cookie": kgqq_cookie}]
+
+# 小米运动
+mimotion_password = "${{ secrets.MIMOTION_PASSWORD_1 || '' }}"
+mimotion_phone = "${{ secrets.MIMOTION_PHONE_1 || '' }}"
+if mimotion_password and mimotion_phone:
+    platforms["MIMOTION"] = [{
+        "max_step": "${{ secrets.MIMOTION_MAX_STEP_1 || '20000' }}",
+        "min_step": "${{ secrets.MIMOTION_MIN_STEP_1 || '10000' }}",
+        "password": mimotion_password,
+        "phone": mimotion_phone
+    }]
+
+# 什么值得买
+smzdm_cookie = "${{ secrets.SMZDM_COOKIE_1 || '' }}"
+if smzdm_cookie:
+    platforms["SMZDM"] = [{"cookie": smzdm_cookie}]
+
+# 百度贴吧
+tieba_cookie = "${{ secrets.TIEBA_COOKIE_1 || '' }}"
+if tieba_cookie:
+    platforms["TIEBA"] = [{"cookie": tieba_cookie}]
+
+# V2EX
+v2ex_cookie = "${{ secrets.V2EX_COOKIE_1 || '' }}"
+if v2ex_cookie:
+    v2ex_config = {"cookie": v2ex_cookie}
+    v2ex_proxy = "${{ secrets.V2EX_PROXY_1 || '' }}"
+    if v2ex_proxy:
+        v2ex_config["proxy"] = v2ex_proxy
+    platforms["V2EX"] = [v2ex_config]
+
+# 有道云笔记
+youdao_cookie = "${{ secrets.YOUDAO_COOKIE_1 || '' }}"
+if youdao_cookie:
+    platforms["YOUDAO"] = [{"cookie": youdao_cookie}]
+
+# 合并配置
+config.update(platforms)
+
+# 保存配置文件
+with open("config.json", "w", encoding="utf-8") as f:
+    json.dump(config, f, ensure_ascii=False, indent=2)
+
+print("配置文件生成完成")
+print(f"共生成 {len(platforms)} 个平台配置")
+EOF
         
     - name: 验证配置文件
       run: |
-        if [ ! -f "config.yaml" ]; then
+        if [ ! -f "config.json" ]; then
           echo "错误：配置文件生成失败"
           exit 1
         fi
@@ -220,8 +203,9 @@ jobs:
         echo "配置文件生成成功"
         if [ "${{ inputs.debug }}" == "true" ]; then
           echo "=== 配置文件内容 (调试模式) ==="
-          # 只显示非敏感信息
-          grep -E "^[[:space:]]*[a-zA-Z_]+[[:space:]]*:" config.yaml || echo "配置文件格式可能有问题"
+          # 验证JSON格式
+          python3 -m json.tool config.json > /dev/null && echo "JSON 格式验证通过" || echo "JSON 格式验证失败"
+          echo "文件大小: $(du -h config.json | cut -f1)"
         fi
         
     - name: 安装 Python 依赖
@@ -231,7 +215,7 @@ jobs:
           pip install -r requirements.txt
         else
           # 安装常用依赖
-          pip install pyyaml requests schedule
+          pip install requests schedule
         fi
         
     - name: 执行签到脚本
@@ -254,7 +238,7 @@ jobs:
     - name: 清理敏感文件
       if: always()
       run: |
-        rm -f config.yaml
+        rm -f config.json
         echo "敏感文件已清理"
         
     - name: 上传执行日志
