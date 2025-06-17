@@ -2,8 +2,8 @@ name: Daily Check-in
 
 on:
   schedule:
-    # 每天北京时间上午8点执行 (UTC时间0点)
-    - cron: '0 0 * * *'
+    # 每天北京时间上午9点执行 (UTC时间1点)
+    - cron: '0 1 * * *'
   workflow_dispatch:
     inputs:
       debug:
