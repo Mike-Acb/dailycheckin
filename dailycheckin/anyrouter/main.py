@@ -69,7 +69,8 @@ class AnyRouter(CheckIn):
 
     @classmethod
     def _unsbox(cls, arg1):
-        result = [""] * len(cls._unsbox_order)
+        # 索引表中最大值是 0x28(40)，数组长度需要至少为 41
+        result = [""] * (max(cls._unsbox_order) + 1)
         for idx, char in enumerate(arg1):
             if idx >= len(cls._unsbox_order):
                 break
