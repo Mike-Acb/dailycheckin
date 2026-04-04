@@ -292,9 +292,14 @@ jobs:
           exit 0
         fi
         echo "开始执行 AnyRouter 自定义签到..."
-        curl --fail --silent --show-error 'https://anyrouter.top/api/user/sign_in' \
+        RESPONSE_FILE="$(mktemp)"
+        HTTP_CODE=$(curl --silent --show-error --compressed \
+          --output "$RESPONSE_FILE" \
+          --write-out "%{http_code}" \
+          'https://anyrouter.top/api/user/sign_in' \
           -X 'POST' \
           -H 'accept: application/json, text/plain, */*' \
+          -H 'accept-encoding: identity' \
           -H 'accept-language: zh-CN,zh;q=0.9,en;q=0.8' \
           -H 'cache-control: no-store' \
           -H 'content-length: 0' \
@@ -309,7 +314,38 @@ jobs:
           -H 'sec-fetch-dest: empty' \
           -H 'sec-fetch-mode: cors' \
           -H 'sec-fetch-site: same-origin' \
-          -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
+          -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36')
+        echo "AnyRouter HTTP 状态码: $HTTP_CODE"
+        echo "AnyRouter 响应:"
+        cat "$RESPONSE_FILE"
+        echo ""
+        if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+          echo "AnyRouter 请求失败"
+          rm -f "$RESPONSE_FILE"
+          exit 1
+        fi
+        RESPONSE_FILE="$RESPONSE_FILE" python3 - <<'PY'
+        import json
+        import os
+        import sys
+
+        p = os.environ.get("RESPONSE_FILE", "")
+        if not p:
+          print("缺少 RESPONSE_FILE 环境变量")
+          sys.exit(1)
+        try:
+          with open(p, "r", encoding="utf-8") as f:
+            data = json.load(f)
+          if isinstance(data, dict) and data.get("success") is True:
+            print("AnyRouter 业务结果: success=true")
+            sys.exit(0)
+          print(f"AnyRouter 业务结果异常: {data}")
+          sys.exit(1)
+        except Exception as e:
+          print(f"响应不是可解析 JSON，跳过业务字段校验: {e}")
+          sys.exit(0)
+        PY
+        rm -f "$RESPONSE_FILE"
         
     - name: 清理敏感文件
       if: always()
