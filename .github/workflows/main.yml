@@ -283,11 +283,14 @@ jobs:
         dailycheckin
 
     - name: 执行 AnyRouter 自定义签到
-      if: ${{ secrets.ANYROUTER_COOKIE != '' && secrets.ANYROUTER_USER_ID != '' }}
       env:
         ANYROUTER_COOKIE: ${{ secrets.ANYROUTER_COOKIE }}
         ANYROUTER_USER_ID: ${{ secrets.ANYROUTER_USER_ID }}
       run: |
+        if [ -z "$ANYROUTER_COOKIE" ] || [ -z "$ANYROUTER_USER_ID" ]; then
+          echo "ANYROUTER_COOKIE 或 ANYROUTER_USER_ID 未配置，跳过 AnyRouter 自定义签到"
+          exit 0
+        fi
         echo "开始执行 AnyRouter 自定义签到..."
         curl --fail --silent --show-error 'https://anyrouter.top/api/user/sign_in' \
           -X 'POST' \
