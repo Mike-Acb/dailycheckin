@@ -281,6 +281,32 @@ jobs:
         echo "开始执行签到任务..."
         # 使用安装后的控制台命令
         dailycheckin
+
+    - name: 执行 AnyRouter 自定义签到
+      if: ${{ secrets.ANYROUTER_COOKIE != '' && secrets.ANYROUTER_USER_ID != '' }}
+      env:
+        ANYROUTER_COOKIE: ${{ secrets.ANYROUTER_COOKIE }}
+        ANYROUTER_USER_ID: ${{ secrets.ANYROUTER_USER_ID }}
+      run: |
+        echo "开始执行 AnyRouter 自定义签到..."
+        curl --fail --silent --show-error 'https://anyrouter.top/api/user/sign_in' \
+          -X 'POST' \
+          -H 'accept: application/json, text/plain, */*' \
+          -H 'accept-language: zh-CN,zh;q=0.9,en;q=0.8' \
+          -H 'cache-control: no-store' \
+          -H 'content-length: 0' \
+          -b "$ANYROUTER_COOKIE" \
+          -H "new-api-user: $ANYROUTER_USER_ID" \
+          -H 'origin: https://anyrouter.top' \
+          -H 'priority: u=1, i' \
+          -H 'referer: https://anyrouter.top/console' \
+          -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+          -H 'sec-ch-ua-mobile: ?0' \
+          -H 'sec-ch-ua-platform: "macOS"' \
+          -H 'sec-fetch-dest: empty' \
+          -H 'sec-fetch-mode: cors' \
+          -H 'sec-fetch-site: same-origin' \
+          -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
         
     - name: 清理敏感文件
       if: always()
